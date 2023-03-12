@@ -2621,7 +2621,10 @@ u_int8_t rlmDomainTxPwrLimitLoad(
 	uint32_t u4CountryStart = 0, u4CountryEnd = 0, u4Pos = 0;
 	struct TX_PWR_LIMIT_SECTION *prSection =
 		&gTx_Pwr_Limit_Section[ucVersion];
+
+#if !DBG_DISABLE_ALL_LOG
 	uint8_t *prFileName = prAdapter->chip_info->prTxPwrLimitFile;
+#endif
 
 
 	if (!rlmDomainTxPwrLimitGetCountryRange(u4CountryCode, pucBuf,
@@ -2672,9 +2675,10 @@ void rlmDomainTxPwrLimitSetChValues(
 	struct CMD_CHANNEL_POWER_LIMIT_V2 *pCmd,
 	struct CHANNEL_TX_PWR_LIMIT *pChTxPwrLimit)
 {
+#if !DBG_DISABLE_ALL_LOG
 	uint8_t section = 0, e = 0;
 	uint8_t ucElementNum = 0;
-
+#endif
 	pCmd->tx_pwr_dsss_cck = pChTxPwrLimit->rTxPwrLimitValue[0][0];
 	pCmd->tx_pwr_dsss_bpsk = pChTxPwrLimit->rTxPwrLimitValue[0][1];
 
@@ -2735,6 +2739,7 @@ void rlmDomainTxPwrLimitSetChValues(
 	pCmd->tx_pwr_lg_80 = pChTxPwrLimit->rTxPwrLimitValue[4][1];
 
 
+#if !DBG_DISABLE_ALL_LOG
 	DBGLOG(RLM, TRACE, "ch %d\n", pCmd->ucCentralCh);
 	for (section = 0; section < TX_PWR_LIMIT_SECTION_NUM; section++) {
 		struct TX_PWR_LIMIT_SECTION *pSection =
@@ -2746,6 +2751,7 @@ void rlmDomainTxPwrLimitSetChValues(
 				gTx_Pwr_Limit_Element[ucVersion][section][e],
 				pChTxPwrLimit->rTxPwrLimitValue[section][e]);
 	}
+#endif
 }
 
 void rlmDomainTxPwrLimitPerRateSetChValues(
@@ -2767,6 +2773,7 @@ void rlmDomainTxPwrLimitPerRateSetChValues(
 		}
 	}
 
+#if !DBG_DISABLE_ALL_LOG
 	DBGLOG(RLM, TRACE, "ch %d\n", pCmd->u1CentralCh);
 	count = 0;
 	for (section = 0; section < TX_PWR_LIMIT_SECTION_NUM; section++) {
@@ -2783,6 +2790,7 @@ void rlmDomainTxPwrLimitPerRateSetChValues(
 			count++;
 		}
 	}
+#endif
 }
 
 void rlmDomainTxPwrLimitSetValues(
@@ -5488,6 +5496,7 @@ struct TX_PWR_CTRL_ELEMENT *txPwrCtrlStringToStruct(char *pcContent,
 	uint8_t ucAppliedWay, ucOperation = 0;
 	char carySeperator[2] = { 0, 0 };
 
+#if !DBG_DISABLE_ALL_LOG
 	char *pacParsePwrAC[PWR_CFG_PRAM_NUM_AC] = {
 #if (CFG_SUPPORT_DYNA_TX_PWR_CTRL_11AC_V2_SETTING == 1)
 		"CCKL",
@@ -5529,7 +5538,7 @@ struct TX_PWR_CTRL_ELEMENT *txPwrCtrlStringToStruct(char *pcContent,
 		"RU1992H",
 		"RU1992U"
 		};
-
+#endif
 	if (!pcContent) {
 		DBGLOG(RLM, ERROR, "pcContent is null\n");
 		return NULL;
@@ -6054,7 +6063,11 @@ void txPwrCtrlShowList(struct ADAPTER *prAdapter, uint8_t filterType,
 		&prAdapter->rTxPwr_DynamicList
 	};
 	uint8_t ucAppliedWay, ucOperation;
-	int i, count = 0;
+	int i = 0;
+
+#if !DBG_DISABLE_ALL_LOG
+    int count = 0;
+#endif
 
 	if (filterType == 1)
 		DBGLOG(RLM, TRACE, "Tx Power Ctrl List=[%s], Size=[%d]",
@@ -7100,7 +7113,10 @@ enum regd_state rlmDomainStateTransition(enum regd_state request_state,
 					 struct regulatory_request *pRequest)
 {
 	enum regd_state next_state, old_state;
+
+#if !DBG_DISABLE_ALL_LOG
 	bool the_same = 0;
+#endif
 
 	old_state = g_mtk_regd_control.state;
 	next_state = REGD_STATE_INVALID;
